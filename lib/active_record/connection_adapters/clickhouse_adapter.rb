@@ -227,4 +227,26 @@ module ActiveRecord
       end
     end
   end
+
+  module QueryMethods
+    OFFSET_REGEXP = %r{\A\d+,\d+\z}.freeze
+    OFFSET_DELIMITER = ','
+
+    def offset(value)
+      if connection.adapter_name == 'Clickhouse'
+        limit = arel.limit =~ OFFSET_REGEXP ? arel.limit.split(OFFSET_DELIMITER).last : arel.limit
+        value = [value, limit.to_i].join(OFFSET_DELIMITER)
+        spawn.limit!(value)
+      else
+        spawn.offset!(value)
+      end
+    end
+
+    def limit(value)
+      if connection.adapter_name == 'Clickhouse' && arel.limit =~ OFFSET_REGEXP
+        value = [arel.limit.split(OFFSET_DELIMITER).first, value].join(OFFSET_DELIMITER)
+      end
+      spawn.limit!(value)
+    end
+  end
 end

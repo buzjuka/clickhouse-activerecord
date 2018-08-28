@@ -135,7 +135,7 @@ module ActiveRecord
         super
         register_class_with_limit m, 'String', Type::String
         register_class_with_limit m, 'Nullable(String)', Type::String
-        register_class_with_limit m, 'FixedString(40)', Type::String
+        register_class_with_limit m, %r(FixedString\(\d+\)), Type::String
         register_class_with_limit m, 'Uint8', Type::UnsignedInteger
         register_class_with_limit m, 'Date',  Clickhouse::OID::Date
         register_class_with_limit m, 'DateTime',  Clickhouse::OID::DateTime

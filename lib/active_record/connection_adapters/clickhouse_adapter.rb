@@ -137,10 +137,10 @@ module ActiveRecord
         register_class_with_limit m, 'Nullable(String)', Type::String
         register_class_with_limit m, %r(FixedString\(\d+\)), Type::String
         register_class_with_limit m, 'Uint8', Type::UnsignedInteger
+        register_class_with_limit m, 'UInt16', Type::UnsignedInteger
+        register_class_with_limit m, 'UInt32', Type::UnsignedInteger
         register_class_with_limit m, 'Date',  Clickhouse::OID::Date
         register_class_with_limit m, 'DateTime',  Clickhouse::OID::DateTime
-        m.alias_type 'UInt16', 'uint4'
-        m.alias_type 'UInt32', 'uint8'
         m.register_type 'UInt64', Clickhouse::OID::BigInteger.new
         m.alias_type 'Int8', 'int4'
         m.alias_type 'Int16', 'int4'

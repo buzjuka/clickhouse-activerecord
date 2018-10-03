@@ -9,17 +9,19 @@ module ActiveRecord
     class << self
       # Establishes a connection to the database that's used by all Active Record objects
       def clickhouse_connection(config)
-        config = config.symbolize_keys
-        host = config[:host]
-        port = config[:port] || 8123
+        config = config.symbolize_keys.reverse_merge(port: 8123)
 
         if config.key?(:database)
           database = config[:database]
         else
           raise ArgumentError, 'No database specified. Missing argument: database.'
         end
-
-        ConnectionAdapters::ClickhouseAdapter.new(nil, logger, [host, port], { user: config[:username], password: config[:password], database: database }.compact)
+        ConnectionAdapters::ClickhouseAdapter.new(
+          nil,
+          logger,
+          config,
+          { user: config[:username], password: config[:password], database: database }.compact
+        )
       end
     end
   end
@@ -223,7 +225,15 @@ module ActiveRecord
       private
 
       def connect
-        @connection = Net::HTTP.start(@connection_parameters[0], @connection_parameters[1])
+        @connection = Net::HTTP.start(
+          @connection_parameters[:host],
+          @connection_parameters[:port],
+          nil,
+          nil,
+          nil,
+          nil,
+          @connection_parameters
+        )
       end
     end
   end

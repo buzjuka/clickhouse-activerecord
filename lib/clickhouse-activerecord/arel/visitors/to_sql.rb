@@ -14,6 +14,16 @@ module ClickhouseActiverecord
           end
         end
 
+        private
+
+        def visit_Arel_Nodes_Offset(o, collector)
+          parts = collector.instance_variable_get(:@parts)
+          clause, limit, _ = parts.last(3)
+          return if clause != 'LIMIT '
+          collector.instance_variable_get(:@parts)[-2] = o.expr
+          collector.instance_variable_get(:@parts)[-1] = ','
+          visit limit.to_i, collector
+        end
       end
     end
   end

@@ -4,6 +4,7 @@ module ClickhouseActiverecord
   module Arel
     module Visitors
       class ToSql < ::Arel::Visitors::ToSql
+        WHERE = ' PREWHERE '
 
         def aggregate(name, o, collector)
           # replacing function name for materialized view
